@@ -1,5 +1,6 @@
 # WebP.Touch
 Xamarin iOS bindings for WebP decoding
+NuGet package can be found here: https://www.nuget.org/packages/WebP.Touch
 
 # WebP framework
 Original WebP framework comes from http://downloads.webmproject.org/releases/webp/index.html
