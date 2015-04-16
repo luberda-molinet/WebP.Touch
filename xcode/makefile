@@ -3,7 +3,7 @@ PROJECT_ROOT=.
 PROJECT=$(PROJECT_ROOT)/WebPWrapper.xcodeproj
 TARGET=WebPWrapper
 
-all: libWebP.a
+all: libWebPWrapper.a
 
 libWebP-sim.a:
 	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphonesimulator archs="x86_64 i386" -configuration Release clean build
@@ -13,9 +13,9 @@ libWebP-arm.a:
 	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphoneos archs="arm64 armv7 armv7s" -configuration Release clean build
 	-mv $(PROJECT_ROOT)/build/Release-iphoneos/lib$(TARGET).a $@
 
-libWebP.a: libWebP-sim.a libWebP-arm.a
+libWebPWrapper.a: libWebP-sim.a libWebP-arm.a
 	lipo -create -output $@ $^
 	-rm -f libWebP-sim.a libWebP-arm.a
-	-lipo -info libWebP.a
+	-lipo -info libWebPWrapper.a
 clean:
 	-rm -f *.a *.dll
