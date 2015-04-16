@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebP.Touch
 {
-	public static class CFunctions
+	internal static class CFunctions
 	{
 		// extern int WebPGetDecoderVersion ();
 		[DllImport ("__Internal")]
