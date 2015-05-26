@@ -6,7 +6,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <WebP/decode.h>
 
 
 #ifndef WebPWrapper_WebPDecoder_h
