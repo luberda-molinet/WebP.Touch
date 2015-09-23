@@ -6,12 +6,15 @@
 #import "WebPDecoder.h"
 #import <WebP/decode.h>
 
-static void free_image_data2(void *info, const void *data, size_t size)
+// This gets called when the UIImage gets collected and frees the underlying image.
+static void free_image_data(void *info, const void *data, size_t size)
 {
-    if(info != NULL)
-        WebPFreeDecBuffer(&(((WebPDecoderConfig *)info)->output));
-    else
-        free((void *)data);
+    if(info != NULL) {
+        WebPFreeDecBuffer(&(((WebPDecoderConfig *) info)->output));
+        free(info);
+    } else {
+        free((void *) data);
+    }
 }
 
 
@@ -38,45 +41,44 @@ static void free_image_data2(void *info, const void *data, size_t size)
 
 -(UIImage*)imageWithWebPData:(NSData*)imgData
 {
-    
     // `WebPGetInfo` weill return image width and height
     int width = 0, height = 0;
     if(!WebPGetInfo([imgData bytes], [imgData length], &width, &height)) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"Header formatting error." forKey:NSLocalizedDescriptionKey];
-        /*if(error != NULL)
-         *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@.errorDomain",  [[NSBundle mainBundle] bundleIdentifier]] code:-101 userInfo:errorDetail];*/
+        //if(error != NULL)
+        //    *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@.errorDomain",  [[NSBundle mainBundle] bundleIdentifier]] code:-101 userInfo:errorDetail];
         
-        NSLog(@"had some error over here: Header formatting error");
+        NSLog(@"Got an error: Header formatting error");
         return nil;
     }
     
-    WebPDecoderConfig config;
-    if(!WebPInitDecoderConfig(&config)) {
+    WebPDecoderConfig * config = malloc(sizeof(WebPDecoderConfig));
+    if(!WebPInitDecoderConfig(config)) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"Failed to initialize structure. Version mismatch." forKey:NSLocalizedDescriptionKey];
         /*if(error != NULL)
          *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@.errorDomain",  [[NSBundle mainBundle] bundleIdentifier]] code:-101 userInfo:errorDetail];*/
         
-        NSLog(@"had some error over here: Failed to initialize structure. Version mismatch.");
+        NSLog(@"Got an error: Failed to initialize structure. Version mismatch.");
         
         return nil;
     }
     
-    config.options.no_fancy_upsampling = 1;
-    config.options.bypass_filtering = 1;
-    config.options.use_threads = 1;
-    config.output.colorspace = MODE_RGBA;
+    config->options.no_fancy_upsampling = 1;
+    config->options.bypass_filtering = 1;
+    config->options.use_threads = 1;
+    config->output.colorspace = MODE_RGBA;
     
     // Decode the WebP image data into a RGBA value array
-    VP8StatusCode decodeStatus = WebPDecode([imgData bytes], [imgData length], &config);
+    VP8StatusCode decodeStatus = WebPDecode([imgData bytes], [imgData length], config);
     if (decodeStatus != VP8_STATUS_OK) {
         /*NSString *errorString = [self statusForVP8Code:decodeStatus];
-         
-         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-         [errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-         if(error != NULL)
-         *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@.errorDomain",  [[NSBundle mainBundle] bundleIdentifier]] code:-101 userInfo:errorDetail];*/
+        
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+        if(error != NULL)
+            *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@.errorDomain",  [[NSBundle mainBundle] bundleIdentifier]] code:-101 userInfo:errorDetail];*/
         
         NSLog(@"had some error over here: vp8 status error");
         
@@ -86,7 +88,7 @@ static void free_image_data2(void *info, const void *data, size_t size)
     
     // Construct UIImage from the decoded RGBA value array
     uint8_t *data = WebPDecodeRGBA([imgData bytes], [imgData length], &width, &height);
-    CGDataProviderRef provider = CGDataProviderCreateWithData(&config, data, config.options.scaled_width  * config.options.scaled_height * 4, free_image_data2);
+    CGDataProviderRef provider = CGDataProviderCreateWithData(config, data, config->options.scaled_width  * config->options.scaled_height * 4, free_image_data);
     
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault |kCGImageAlphaLast;
@@ -99,7 +101,6 @@ static void free_image_data2(void *info, const void *data, size_t size)
     CGImageRelease(imageRef);
     CGColorSpaceRelease(colorSpaceRef);
     CGDataProviderRelease(provider);
-    WebPFreeDecBuffer(&config.output);
     
     return result;
 }
