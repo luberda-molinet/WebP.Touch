@@ -67,6 +67,7 @@ namespace WebP.Touch
 	// @interface BindingTestNative : NSObject
 	[BaseType (typeof(NSObject))]
 	[Internal]
+	[Protocol]
 	internal interface WebPDecoder
 	{
 		// -(UIImage *)imageWithWebP:(NSString *)filePath;
