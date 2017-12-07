@@ -88,7 +88,7 @@ static void free_image_data(void *info, const void *data, size_t size)
     
     // Construct UIImage from the decoded RGBA value array
     uint8_t *data = WebPDecodeRGBA([imgData bytes], [imgData length], &width, &height);
-    CGDataProviderRef provider = CGDataProviderCreateWithData(config, data, config->options.scaled_width  * config->options.scaled_height * 4, free_image_data);
+    CGDataProviderRef provider = CGDataProviderCreateWithData(config, data, (config->options.scaled_width || width) * (config->options.scaled_height || height) * 4, free_image_data);
     
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault |kCGImageAlphaLast;
