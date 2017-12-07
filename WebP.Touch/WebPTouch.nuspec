@@ -2,9 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
    <metadata minClientVersion="2.8.1">
        <id>WebP.Touch</id>
-       <version>1.0.4</version>
+       <version>1.0.5</version>
        <title>Xamarin iOS bindings to handle WebP</title>
-       <authors>Cosmin Gordea and Molinet Fabien</authors>
+       <authors>Cosmin Gordea, Molinet Fabien, Daniel Luberda</authors>
        <owners></owners>
        <projectUrl>https://github.com/molinch/WebP.Touch</projectUrl>
        <iconUrl>http://rincliu.com/images/20130710_webp.png</iconUrl>
