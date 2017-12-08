@@ -7,16 +7,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-
-#ifndef WebPWrapper_WebPDecoder_h
-#define WebPWrapper_WebPDecoder_h
-
 @interface WebPDecoder : NSObject
 
--(UIImage*)imageWithWebP:(NSString*)filePath;
+-(UIImage*)imageWithWebP:(NSString*)filePath error:(NSError **)error;
 
--(UIImage*)imageWithWebPData:(NSData*)imgData;
+-(UIImage*)imageWithWebPData:(NSData*)imgData error:(NSError **)error;
+
+-(int)getVersion;
 
 @end
-
-#endif

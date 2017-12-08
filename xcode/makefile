@@ -6,11 +6,11 @@ TARGET=WebPWrapper
 all: libWebPWrapper.a
 
 libWebP-sim.a:
-	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphonesimulator archs="x86_64 i386" -configuration Release clean build
+	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphonesimulator11.2 archs="i386 x86_64" -configuration Release clean build
 	-mv $(PROJECT_ROOT)/build/Release-iphonesimulator/lib$(TARGET).a $@
 
 libWebP-arm.a:
-	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphoneos archs="arm64 armv7 armv7s" -configuration Release clean build
+	$(XBUILD) -project $(PROJECT) -target $(TARGET) -sdk iphoneos11.2 archs="armv7 armv7s arm64" -configuration Release clean build
 	-mv $(PROJECT_ROOT)/build/Release-iphoneos/lib$(TARGET).a $@
 
 libWebPWrapper.a: libWebP-sim.a libWebP-arm.a

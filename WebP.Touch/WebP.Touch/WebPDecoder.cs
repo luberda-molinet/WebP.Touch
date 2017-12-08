@@ -5,10 +5,16 @@ using System.IO;
 
 namespace WebP.Touch
 {
+    /// <summary>
+    /// WebPCodec.
+    /// </summary>
 	public class WebPCodec
 	{
 		private readonly WebPDecoder _decoder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:WebP.Touch.WebPCodec"/> class.
+        /// </summary>
 		public WebPCodec()
 		{
 			_decoder = new WebPDecoder();
@@ -21,7 +27,11 @@ namespace WebP.Touch
 		/// <returns>An image</returns>
 		public UIImage Decode(string filepath)
 		{
-			return _decoder.ImageWithWebP(filepath);
+            NSError error = null;
+            var result = _decoder.ImageWithWebP(filepath, out error);
+            if (error != null)
+                throw new NSErrorException(error);
+            return result;
 		}
 
 		/// <summary>
@@ -31,7 +41,11 @@ namespace WebP.Touch
 		/// <returns>An image</returns>
 		public UIImage Decode(NSData data)
 		{
-			return _decoder.ImageWithWebPData(data);
+            NSError error = null;
+            var result = _decoder.ImageWithWebPData(data, out error);
+            if (error != null)
+                throw new NSErrorException(error);
+            return result;
 		}
 
 		/// <summary>
@@ -41,8 +55,14 @@ namespace WebP.Touch
 		/// <returns>An image</returns>
 		public UIImage Decode(Stream stream)
 		{
-			var data = NSData.FromStream(stream);
-			return _decoder.ImageWithWebPData(data);
+            NSError error = null;
+            using (var data = NSData.FromStream(stream))
+            {
+                var result = _decoder.ImageWithWebPData(data, out error);
+                if (error != null)
+                    throw new NSErrorException(error);
+                return result;
+            }
 		}
 
 		/// <summary>
@@ -51,8 +71,14 @@ namespace WebP.Touch
 		/// <param name="bytes">Byte array that contains a WebP image.</param>
 		public UIImage Decode(byte[] bytes)
 		{
-			var data = NSData.FromArray(bytes);
-			return _decoder.ImageWithWebPData(data);
+            NSError error = null;
+            using (var data = NSData.FromArray(bytes))
+            {
+                var result = _decoder.ImageWithWebPData(data, out error);
+                if (error != null)
+                    throw new NSErrorException(error);
+                return result;
+            }
 		}
 
 		/// <summary>
@@ -63,7 +89,7 @@ namespace WebP.Touch
 		{
 			get
 			{
-				return WebP.Touch.CFunctions.WebPGetDecoderVersion();
+                return _decoder.GetVersion();
 			}
 		}
 	}

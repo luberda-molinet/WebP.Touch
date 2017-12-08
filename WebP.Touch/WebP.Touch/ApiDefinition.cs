@@ -70,13 +70,14 @@ namespace WebP.Touch
 	[Protocol]
 	internal interface WebPDecoder
 	{
-		// -(UIImage *)imageWithWebP:(NSString *)filePath;
-		[Export ("imageWithWebP:")]
-		UIImage ImageWithWebP (string filePath);
+        [Export ("imageWithWebP:error:")]
+        UIImage ImageWithWebP (string filePath, out NSError error);
 
-		// -(UIImage *)imageWithWebPData:(NSData *)imgData;
-		[Export ("imageWithWebPData:")]
-		UIImage ImageWithWebPData (NSData imgData);
+        [Export ("imageWithWebPData:error:")]
+        UIImage ImageWithWebPData (NSData imgData, out NSError error);
+
+        [Export("getVersion")]
+        int GetVersion();
 	}
 }
 
